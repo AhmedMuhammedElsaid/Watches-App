@@ -1,16 +1,17 @@
 {
   "expo": {
-    "name": "scaffold",
-    "slug": "scaffold",
+    "name": "Watches",
+    "slug": "watches-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "scaffold",
+    "scheme": "watchesapp",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "nl.techflow.watches",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -33,10 +34,18 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1ce8bda3-083f-4461-84be-129eb6b693ee"
+      }
     }
   }
 }
