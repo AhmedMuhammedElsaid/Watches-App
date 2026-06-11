@@ -42,3 +42,5 @@ yarn-error.*
 
 .env
 *.sql*
+PROMPTS.md
+/scripts/gen-elaraby-seed.ps1
