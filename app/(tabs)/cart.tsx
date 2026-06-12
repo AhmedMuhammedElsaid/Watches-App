@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { FlatList, Image, Pressable, StyleSheet } from 'react-native';
+import { FlatList, Pressable, StyleSheet } from 'react-native';
 
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
@@ -70,7 +71,12 @@ function CartRow({ item }: { item: CartItem }) {
 
   return (
     <View style={[styles.row, { backgroundColor: card, borderColor: border }]}>
-      <Image source={{ uri: item.product.image_url }} style={styles.thumb} />
+      <Image
+        source={{ uri: item.product.image_url }}
+        style={styles.thumb}
+        contentFit="cover"
+        transition={200}
+      />
       <View style={[styles.rowBody, { backgroundColor: 'transparent' }]}>
         <Text style={[styles.rowBrand, { color: tint }]}>{item.product.brand}</Text>
         <Text style={styles.rowName} numberOfLines={2}>

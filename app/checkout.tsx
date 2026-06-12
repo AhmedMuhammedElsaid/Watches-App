@@ -1,4 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
@@ -24,9 +25,13 @@ export default function CheckoutScreen() {
   const placeOrder = () => {
     createOrder.mutate(items, {
       onSuccess: () => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         clear();
         router.dismissAll();
         router.replace('/(tabs)/orders');
+      },
+      onError: () => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       },
     });
   };

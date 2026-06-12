@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Logo } from '@/components/Logo';
 import { ProductCard } from '@/components/ProductCard';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
@@ -28,8 +29,13 @@ export default function ShopScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top + 14 }]}>
       <View style={styles.masthead}>
-        <Text style={[styles.kicker, { color: tint }]}>Fine timepieces</Text>
-        <Text style={styles.title}>The Boutique</Text>
+        <View style={styles.brandRow}>
+          <Logo size={32} />
+          <Text style={styles.wordmark} numberOfLines={1}>
+            Elaraby Watches
+          </Text>
+        </View>
+        <Text style={[styles.kicker, { color: muted }]}>Fine Timepieces</Text>
       </View>
 
       <View style={[styles.searchWrap, { backgroundColor: card, borderColor: border }]}>
@@ -133,15 +139,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     marginBottom: 14,
   },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  wordmark: {
+    fontFamily: Fonts.display,
+    fontSize: 24,
+    letterSpacing: 0.5,
+    flexShrink: 1,
+  },
   kicker: {
     fontSize: 11,
     letterSpacing: 3,
     textTransform: 'uppercase',
-    marginBottom: 4,
-  },
-  title: {
-    fontFamily: Fonts.display,
-    fontSize: 32,
+    marginTop: 2,
+    marginLeft: 42,
   },
   searchWrap: {
     flexDirection: 'row',

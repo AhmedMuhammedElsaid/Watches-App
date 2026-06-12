@@ -1,9 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import * as Haptics from 'expo-haptics';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet } from 'react-native';
 
+import { FavouriteButton } from '@/components/FavouriteButton';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
 import { useCart } from '@/features/cart/CartContext';
@@ -36,16 +39,29 @@ export default function WatchDetailScreen() {
 
   const onAdd = () => {
     add(product);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1600);
   };
 
   return (
     <View style={styles.screen}>
-      <Stack.Screen options={{ title: product.brand, headerBackTitle: 'Back' }} />
+      <Stack.Screen
+        options={{
+          title: product.brand,
+          headerBackTitle: 'Back',
+          headerRight: () => <FavouriteButton product={product} size={24} />,
+        }}
+      />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.imageWrap}>
-          <Image source={{ uri: product.image_url }} style={styles.image} resizeMode="cover" />
+          <Image
+            source={{ uri: product.image_url }}
+            style={styles.image}
+            contentFit="cover"
+            transition={300}
+            accessibilityLabel={`${product.brand} ${product.name}`}
+          />
           <LinearGradient
             colors={['transparent', background]}
             style={styles.imageFade}
@@ -98,6 +114,8 @@ export default function WatchDetailScreen() {
 
       <View style={[styles.footer, { backgroundColor: card, borderTopColor: border }]}>
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Add to bag"
           disabled={!canAdd}
           onPress={onAdd}
           style={({ pressed }) => [

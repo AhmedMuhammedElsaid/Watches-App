@@ -1,6 +1,8 @@
+import { Image } from 'expo-image';
 import { Link } from 'expo-router';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
+import { FavouriteButton } from '@/components/FavouriteButton';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
 import { formatPrice, type Product } from '@/lib/types';
@@ -14,17 +16,26 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={{ pathname: '/watch/[id]', params: { id: product.id } }} asChild>
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${product.brand} ${product.name}, ${formatPrice(product.price_cents, product.currency)}`}
         style={({ pressed }) => [
           styles.card,
           { backgroundColor: card, borderColor: border, transform: [{ scale: pressed ? 0.98 : 1 }] },
         ]}>
         <View style={[styles.imageWrap, { backgroundColor: 'transparent' }]}>
-          <Image source={{ uri: product.image_url }} style={styles.image} resizeMode="cover" />
+          <Image
+            source={{ uri: product.image_url }}
+            style={styles.image}
+            contentFit="cover"
+            transition={250}
+            recyclingKey={product.id}
+          />
           {product.stock === 0 && (
             <View style={styles.soldOutBadge}>
               <Text style={styles.soldOutLabel}>Sold out</Text>
             </View>
           )}
+          <FavouriteButton product={product} overlay />
         </View>
         <View style={[styles.body, { backgroundColor: 'transparent' }]}>
           <Text style={[styles.brand, { color: tint }]}>{product.brand}</Text>

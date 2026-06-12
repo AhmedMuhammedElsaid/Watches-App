@@ -1,4 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
@@ -10,7 +11,9 @@ import { Fonts } from '@/constants/Type';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useCart } from '@/features/cart/CartContext';
+import { useFavourites } from '@/features/favourites/hooks';
 import { useOrders } from '@/features/orders/hooks';
+import { formatPrice, type Product } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 
 export default function ProfileScreen() {
@@ -22,6 +25,7 @@ export default function ProfileScreen() {
 
   const { count: bagCount } = useCart();
   const { data: orders } = useOrders();
+  const { data: saved } = useFavourites();
 
   const tint = palette.tint;
   const onTint = palette.onTint;
@@ -52,10 +56,6 @@ export default function ProfileScreen() {
   const fullName = (session.user.user_metadata?.full_name as string | undefined) ?? null;
   const displayName = fullName ?? email.split('@')[0] ?? 'Guest';
   const initial = displayName.charAt(0).toUpperCase();
-  const memberSince = new Date(session.user.created_at).toLocaleDateString(undefined, {
-    month: 'short',
-    year: 'numeric',
-  });
   const orderCount = orders?.length ?? 0;
 
   return (
@@ -77,10 +77,30 @@ export default function ProfileScreen() {
       <View style={[styles.stats, { backgroundColor: card, borderColor: border }]}>
         <Stat label="Orders" value={String(orderCount)} />
         <View style={[styles.statDivider, { backgroundColor: border }]} />
-        <Stat label="In bag" value={String(bagCount)} />
+        <Stat label="Saved" value={String(saved?.length ?? 0)} />
         <View style={[styles.statDivider, { backgroundColor: border }]} />
-        <Stat label="Member" value={memberSince} />
+        <Stat label="In bag" value={String(bagCount)} />
       </View>
+
+      {/* Saved items */}
+      <Text style={[styles.sectionTitle, { color: muted }]}>Saved items</Text>
+      {saved && saved.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.savedScroll}>
+          {saved.map((product) => (
+            <SavedCard key={product.id} product={product} />
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={[styles.savedEmpty, { backgroundColor: card, borderColor: border }]}>
+          <MaterialIcons name="favorite-border" size={22} color={muted} />
+          <Text style={[styles.savedEmptyText, { color: muted }]}>
+            Tap the heart on any watch to save it here.
+          </Text>
+        </View>
+      )}
 
       {/* Account menu */}
       <Text style={[styles.sectionTitle, { color: muted }]}>Account</Text>
@@ -113,6 +133,36 @@ export default function ProfileScreen() {
         <Text style={styles.signOutLabel}>Sign out</Text>
       </Pressable>
     </ScrollView>
+  );
+}
+
+function SavedCard({ product }: { product: Product }) {
+  const router = useRouter();
+  const card = useThemeColor({}, 'card');
+  const border = useThemeColor({}, 'border');
+  const tint = useThemeColor({}, 'tint');
+  const muted = useThemeColor({}, 'muted');
+
+  return (
+    <Pressable
+      onPress={() => router.push({ pathname: '/watch/[id]', params: { id: product.id } })}
+      style={({ pressed }) => [
+        styles.savedCard,
+        { backgroundColor: card, borderColor: border, opacity: pressed ? 0.85 : 1 },
+      ]}>
+      <Image source={{ uri: product.image_url }} style={styles.savedImage} contentFit="cover" transition={200} />
+      <View style={[styles.savedBody, { backgroundColor: 'transparent' }]}>
+        <Text style={[styles.savedBrand, { color: tint }]} numberOfLines={1}>
+          {product.brand}
+        </Text>
+        <Text style={styles.savedName} numberOfLines={1}>
+          {product.name}
+        </Text>
+        <Text style={[styles.savedPrice, { color: muted }]}>
+          {formatPrice(product.price_cents, product.currency)}
+        </Text>
+      </View>
+    </Pressable>
   );
 }
 
@@ -255,6 +305,50 @@ const styles = StyleSheet.create({
     marginHorizontal: 22,
     marginTop: 24,
     marginBottom: 10,
+  },
+  savedScroll: {
+    paddingHorizontal: 18,
+    gap: 12,
+  },
+  savedCard: {
+    width: 150,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  savedImage: {
+    width: '100%',
+    height: 150,
+  },
+  savedBody: {
+    padding: 10,
+    gap: 2,
+  },
+  savedBrand: {
+    fontSize: 10,
+    letterSpacing: 1.4,
+    textTransform: 'uppercase',
+  },
+  savedName: {
+    fontFamily: Fonts.displayMedium,
+    fontSize: 13,
+  },
+  savedPrice: {
+    fontSize: 12.5,
+    marginTop: 2,
+  },
+  savedEmpty: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: 18,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 16,
+  },
+  savedEmptyText: {
+    flex: 1,
+    fontSize: 14,
   },
   menu: {
     marginHorizontal: 18,

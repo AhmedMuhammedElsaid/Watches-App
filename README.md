@@ -1,10 +1,14 @@
-# Watches — E-Commerce App
+# Elaraby Watches — Fine Timepieces
 
-A mobile e-commerce app for selling watches, built on the official Expo Router tabs template.
-Browse a real seeded catalog (60+ Seiko watches with Arabic names and EGP prices), add to cart,
-check out, and track orders — backed by Supabase with Row Level Security.
+A luxury mobile e-commerce app for selling watches, built on the official Expo Router tabs template.
+Browse a real seeded catalog (60+ Seiko watches with Arabic names and EGP prices), add to bag,
+favourite items, check out, and track orders — backed by Supabase with Row Level Security.
 
-**Stack:** React Native 0.81 (New Architecture) · Expo SDK 54 · TypeScript (strict) · Supabase (Postgres, Auth) · TanStack Query · FlashList · Expo Router
+Branding: a custom gold watch-dial logo drives the app icon, splash screen, an animated
+startup sequence, and an in-app SVG logomark. Regenerate the icon/splash/favicon from the
+vector source with `node scripts/gen-logo.js`.
+
+**Stack:** React Native 0.81 (New Architecture) · Expo SDK 54 · TypeScript (strict) · Supabase (Postgres, Auth) · TanStack Query · Expo Router · expo-image (cached) · react-native-svg · Playfair Display
 
 > SDK note: the project is pinned to SDK 54 to match the Expo Go build currently on the
 > App Store. To upgrade later: `npx expo install expo@^56.0.0 --fix`.

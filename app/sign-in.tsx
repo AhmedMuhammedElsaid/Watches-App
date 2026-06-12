@@ -1,7 +1,9 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput } from 'react-native';
 
+import { Logo } from '@/components/Logo';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
 import { supabase } from '@/lib/supabase';
@@ -10,6 +12,7 @@ export default function SignInScreen() {
   const [mode, setMode] = useState<'sign-in' | 'sign-up'>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const router = useRouter();
@@ -39,66 +42,118 @@ export default function SignInScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.kicker, { color: tint }]}>Fine timepieces</Text>
-      <Text style={styles.title}>{mode === 'sign-in' ? 'Welcome back' : 'Create account'}</Text>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <View style={styles.container}>
+        <View style={styles.brandRow}>
+          <Logo size={38} />
+          <Text style={styles.wordmark} numberOfLines={1}>
+            Elaraby Watches
+          </Text>
+        </View>
+        <Text style={[styles.kicker, { color: muted }]}>Fine Timepieces</Text>
+        <Text style={styles.title}>{mode === 'sign-in' ? 'Welcome back' : 'Create account'}</Text>
 
-      <TextInput
-        style={[styles.input, { backgroundColor: card, borderColor: border, color: text }]}
-        placeholder="Email"
-        placeholderTextColor={muted}
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoCorrect={false}
-      />
-      <TextInput
-        style={[styles.input, { backgroundColor: card, borderColor: border, color: text }]}
-        placeholder="Password"
-        placeholderTextColor={muted}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+        <TextInput
+          style={[styles.input, { backgroundColor: card, borderColor: border, color: text }]}
+          placeholder="Email"
+          placeholderTextColor={muted}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+          autoComplete="email"
+          autoCorrect={false}
+          returnKeyType="next"
+        />
+        <View style={[styles.passwordRow, { backgroundColor: card, borderColor: border }]}>
+          <TextInput
+            style={[styles.passwordInput, { color: text }]}
+            placeholder="Password"
+            placeholderTextColor={muted}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            textContentType="password"
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="go"
+            onSubmitEditing={submit}
+          />
+          <Pressable
+            onPress={() => setShowPassword((shown) => !shown)}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+            style={styles.eyeButton}>
+            <MaterialIcons
+              name={showPassword ? 'visibility-off' : 'visibility'}
+              size={22}
+              color={muted}
+            />
+          </Pressable>
+        </View>
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        {error && <Text style={styles.error}>{error}</Text>}
 
-      <Pressable
-        disabled={pending || !email.trim() || !password}
-        onPress={submit}
-        style={({ pressed }) => [
-          styles.button,
-          { backgroundColor: tint, opacity: pending ? 0.5 : pressed ? 0.85 : 1 },
-        ]}>
-        <Text style={[styles.buttonLabel, { color: onTint }]}>
-          {pending ? 'Please wait…' : mode === 'sign-in' ? 'Sign in' : 'Sign up'}
-        </Text>
-      </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          disabled={pending || !email.trim() || !password}
+          onPress={submit}
+          style={({ pressed }) => [
+            styles.button,
+            { backgroundColor: tint, opacity: pending ? 0.5 : pressed ? 0.85 : 1 },
+          ]}>
+          <Text style={[styles.buttonLabel, { color: onTint }]}>
+            {pending ? 'Please wait…' : mode === 'sign-in' ? 'Sign in' : 'Sign up'}
+          </Text>
+        </Pressable>
 
-      <Pressable onPress={() => setMode(mode === 'sign-in' ? 'sign-up' : 'sign-in')} hitSlop={8}>
-        <Text style={[styles.switch, { color: tint }]}>
-          {mode === 'sign-in' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-        </Text>
-      </Pressable>
-    </View>
+        <Pressable onPress={() => setMode(mode === 'sign-in' ? 'sign-up' : 'sign-in')} hitSlop={8}>
+          <Text style={[styles.switch, { color: tint }]}>
+            {mode === 'sign-in'
+              ? "Don't have an account? Sign up"
+              : 'Already have an account? Sign in'}
+          </Text>
+        </Pressable>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 24,
     gap: 14,
+    justifyContent: 'center',
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  wordmark: {
+    fontFamily: Fonts.display,
+    fontSize: 27,
+    letterSpacing: 0.5,
+    flexShrink: 1,
   },
   kicker: {
     fontSize: 11,
     letterSpacing: 3,
     textTransform: 'uppercase',
+    marginLeft: 50,
   },
   title: {
     fontFamily: Fonts.display,
-    fontSize: 30,
+    fontSize: 28,
+    marginTop: 18,
     marginBottom: 8,
   },
   input: {
@@ -107,6 +162,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 13,
     fontSize: 15,
+  },
+  passwordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 13,
+    fontSize: 15,
+  },
+  eyeButton: {
+    paddingLeft: 12,
   },
   error: {
     color: '#d05252',

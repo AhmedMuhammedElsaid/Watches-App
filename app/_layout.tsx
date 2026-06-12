@@ -8,9 +8,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
+import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { Fonts } from '@/constants/Type';
@@ -76,6 +78,7 @@ function buildTheme(base: Theme, palette: (typeof Colors)['light']): Theme {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const [splashComplete, setSplashComplete] = useState(false);
   const theme =
     colorScheme === 'dark'
       ? buildTheme(DarkTheme, Colors.dark)
@@ -86,16 +89,18 @@ function RootLayoutNav() {
       <AuthProvider>
         <CartProvider>
           <ThemeProvider value={theme}>
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
             <Stack
               screenOptions={{
                 headerTitleStyle: { fontFamily: Fonts.displayMedium, fontSize: 18 },
                 headerShadowVisible: false,
               }}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="watch/[id]" options={{ title: '' , headerTransparent: false }} />
+              <Stack.Screen name="watch/[id]" options={{ title: '', headerTransparent: false }} />
               <Stack.Screen name="checkout" options={{ presentation: 'modal', title: 'Checkout' }} />
               <Stack.Screen name="sign-in" options={{ presentation: 'modal', title: 'Welcome' }} />
             </Stack>
+            {!splashComplete && <AnimatedSplash onFinish={() => setSplashComplete(true)} />}
           </ThemeProvider>
         </CartProvider>
       </AuthProvider>
