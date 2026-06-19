@@ -1,12 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Haptics from 'expo-haptics';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { FavouriteButton } from '@/components/FavouriteButton';
+import { ProductImage } from '@/components/ProductImage';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
 import { useCart } from '@/features/cart/CartContext';
@@ -55,10 +55,9 @@ export default function WatchDetailScreen() {
       />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.imageWrap}>
-          <Image
-            source={{ uri: product.image_url }}
+          <ProductImage
+            uri={product.image_url}
             style={styles.image}
-            contentFit="cover"
             transition={300}
             accessibilityLabel={`${product.brand} ${product.name}`}
           />

@@ -1,8 +1,8 @@
-import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { FavouriteButton } from '@/components/FavouriteButton';
+import { ProductImage } from '@/components/ProductImage';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
 import { formatPrice, type Product } from '@/lib/types';
@@ -23,11 +23,9 @@ export function ProductCard({ product }: { product: Product }) {
           { backgroundColor: card, borderColor: border, transform: [{ scale: pressed ? 0.98 : 1 }] },
         ]}>
         <View style={[styles.imageWrap, { backgroundColor: 'transparent' }]}>
-          <Image
-            source={{ uri: product.image_url }}
+          <ProductImage
+            uri={product.image_url}
             style={styles.image}
-            contentFit="cover"
-            transition={250}
             recyclingKey={product.id}
           />
           {product.stock === 0 && (
