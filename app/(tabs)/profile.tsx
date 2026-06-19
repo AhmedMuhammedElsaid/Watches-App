@@ -1,10 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import DeveloperCredit from '@/components/DeveloperCredit';
+import { ProductImage } from '@/components/ProductImage';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Fonts } from '@/constants/Type';
@@ -35,19 +36,24 @@ export default function ProfileScreen() {
 
   if (!session) {
     return (
-      <View style={styles.center}>
-        <View style={[styles.guestAvatar, { backgroundColor: card, borderColor: border }]}>
-          <MaterialIcons name="person-outline" size={40} color={muted} />
+      <View style={styles.guestRoot}>
+        <View style={styles.center}>
+          <View style={[styles.guestAvatar, { backgroundColor: card, borderColor: border }]}>
+            <MaterialIcons name="person-outline" size={40} color={muted} />
+          </View>
+          <Text style={styles.title}>Welcome</Text>
+          <Text style={[styles.subtitle, { color: muted }]}>
+            Sign in to track your orders, save your details, and check out faster.
+          </Text>
+          <Pressable
+            onPress={() => router.push('/sign-in')}
+            style={({ pressed }) => [styles.cta, { backgroundColor: tint, opacity: pressed ? 0.85 : 1 }]}>
+            <Text style={[styles.ctaLabel, { color: onTint }]}>Sign in</Text>
+          </Pressable>
         </View>
-        <Text style={styles.title}>Welcome</Text>
-        <Text style={[styles.subtitle, { color: muted }]}>
-          Sign in to track your orders, save your details, and check out faster.
-        </Text>
-        <Pressable
-          onPress={() => router.push('/sign-in')}
-          style={({ pressed }) => [styles.cta, { backgroundColor: tint, opacity: pressed ? 0.85 : 1 }]}>
-          <Text style={[styles.ctaLabel, { color: onTint }]}>Sign in</Text>
-        </Pressable>
+        <View style={{ paddingBottom: insets.bottom + 24 }}>
+          <DeveloperCredit />
+        </View>
       </View>
     );
   }
@@ -132,6 +138,8 @@ export default function ProfileScreen() {
         <MaterialIcons name="logout" size={18} color="#d05252" />
         <Text style={styles.signOutLabel}>Sign out</Text>
       </Pressable>
+
+      <DeveloperCredit />
     </ScrollView>
   );
 }
@@ -150,7 +158,7 @@ function SavedCard({ product }: { product: Product }) {
         styles.savedCard,
         { backgroundColor: card, borderColor: border, opacity: pressed ? 0.85 : 1 },
       ]}>
-      <Image source={{ uri: product.image_url }} style={styles.savedImage} contentFit="cover" transition={200} />
+      <ProductImage uri={product.image_url} style={styles.savedImage} transition={200} />
       <View style={[styles.savedBody, { backgroundColor: 'transparent' }]}>
         <Text style={[styles.savedBrand, { color: tint }]} numberOfLines={1}>
           {product.brand}
@@ -208,6 +216,9 @@ function Divider({ color }: { color: string }) {
 }
 
 const styles = StyleSheet.create({
+  guestRoot: {
+    flex: 1,
+  },
   center: {
     flex: 1,
     alignItems: 'center',
