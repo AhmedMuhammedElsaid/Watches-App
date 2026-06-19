@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Elaraby Watches",
-    "slug": "watches-app",
+    "name": "Branded Watches",
+    "slug": "watches-brands-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -45,7 +45,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "1ce8bda3-083f-4461-84be-129eb6b693ee"
+        "projectId": "aa0012ba-de12-48d4-9ba1-59ec51b4bfc3"
       }
     }
   }
