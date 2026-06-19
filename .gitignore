@@ -44,3 +44,5 @@ yarn-error.*
 *.sql*
 PROMPTS.md
 /scripts/gen-elaraby-seed.ps1
+/scripts/build-android-preview.ps1
+/scripts/gen-logo-from-png.js
