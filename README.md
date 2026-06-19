@@ -4,9 +4,9 @@ A luxury mobile e-commerce app for selling watches, built on the official Expo R
 Browse a real seeded catalog (60+ Seiko watches with Arabic names and EGP prices), add to bag,
 favourite items, check out, and track orders — backed by Supabase with Row Level Security.
 
-Branding: a custom gold watch-dial logo drives the app icon, splash screen, an animated
-startup sequence, and an in-app SVG logomark. Regenerate the icon/splash/favicon from the
-vector source with `node scripts/gen-logo.js`.
+Branding: a custom gold watch-dial logo drives the app icon, splash screen, and an animated
+startup sequence. Regenerate the icon/splash/favicon/adaptive-icon assets from the source
+image (`assets/logo-samples/logo.png`) with `node scripts/gen-logo-from-png.js`.
 
 **Stack:** React Native 0.81 (New Architecture) · Expo SDK 54 · TypeScript (strict) · Supabase (Postgres, Auth) · TanStack Query · Expo Router · expo-image (cached) · react-native-svg · Playfair Display
 
