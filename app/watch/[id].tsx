@@ -113,7 +113,7 @@ export default function WatchDetailScreen() {
         </View>
       </ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: card, borderTopColor: border, paddingBottom: insets.bottom + 14 }]}>
+      <View style={[styles.footer, { backgroundColor: card, borderTopColor: border }]}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Add to bag"
@@ -121,7 +121,7 @@ export default function WatchDetailScreen() {
           onPress={onAdd}
           style={({ pressed }) => [
             styles.button,
-            { backgroundColor: tint, opacity: canAdd ? (pressed ? 0.85 : 1) : 0.35 },
+            { backgroundColor: tint, opacity: canAdd ? (pressed ? 0.85 : 1) : 0.35, marginBottom: insets.bottom },
           ]}>
           <Text style={[styles.buttonLabel, { color: onTint }]}>
             {justAdded ? 'Added to bag ✓' : canAdd ? 'Add to bag' : 'Unavailable'}
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     gap: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingVertical: 14,
   },
   button: {
     flex: 1,
