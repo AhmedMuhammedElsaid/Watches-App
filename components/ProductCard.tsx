@@ -1,10 +1,13 @@
+import * as Haptics from 'expo-haptics';
 import { Link } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { FavouriteButton } from '@/components/FavouriteButton';
 import { ProductImage } from '@/components/ProductImage';
 import { Text, View, useThemeColor } from '@/components/Themed';
 import { Fonts } from '@/constants/Type';
+import { useCart } from '@/features/cart/CartContext';
 import { formatPrice, type Product } from '@/lib/types';
 
 export function ProductCard({ product }: { product: Product }) {
@@ -12,6 +15,16 @@ export function ProductCard({ product }: { product: Product }) {
   const border = useThemeColor({}, 'border');
   const muted = useThemeColor({}, 'muted');
   const tint = useThemeColor({}, 'tint');
+  const onTint = useThemeColor({}, 'onTint');
+  const { add } = useCart();
+  const [justAdded, setJustAdded] = useState(false);
+
+  const onAdd = () => {
+    add(product);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+  };
 
   return (
     <Link href={{ pathname: '/watch/[id]', params: { id: product.id } }} asChild>
@@ -46,6 +59,19 @@ export function ProductCard({ product }: { product: Product }) {
               {formatPrice(product.price_cents, product.currency)}
             </Text>
           </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add to bag"
+            disabled={product.stock === 0}
+            onPress={onAdd}
+            style={({ pressed }) => [
+              styles.addButton,
+              { backgroundColor: tint, opacity: product.stock === 0 ? 0.35 : pressed ? 0.85 : 1 },
+            ]}>
+            <Text style={[styles.addLabel, { color: onTint }]}>
+              {product.stock === 0 ? 'Sold out' : justAdded ? 'Added ✓' : 'Add to bag'}
+            </Text>
+          </Pressable>
         </View>
       </Pressable>
     </Link>
@@ -109,5 +135,16 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 13.5,
     letterSpacing: 0.3,
+  },
+  addButton: {
+    borderRadius: 999,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  addLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 });

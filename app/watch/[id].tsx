@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FavouriteButton } from '@/components/FavouriteButton';
 import { ProductImage } from '@/components/ProductImage';
@@ -19,6 +20,7 @@ export default function WatchDetailScreen() {
   const { add, items } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const background = useThemeColor({}, 'background');
   const card = useThemeColor({}, 'card');
@@ -111,7 +113,7 @@ export default function WatchDetailScreen() {
         </View>
       </ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: card, borderTopColor: border }]}>
+      <View style={[styles.footer, { backgroundColor: card, borderTopColor: border, paddingBottom: insets.bottom + 14 }]}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Add to bag"
@@ -231,7 +233,7 @@ const styles = StyleSheet.create({
     gap: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 20,
-    paddingVertical: 14,
+    paddingTop: 14,
   },
   button: {
     flex: 1,

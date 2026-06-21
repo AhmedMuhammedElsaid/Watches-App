@@ -30,8 +30,14 @@ Notes:
 
 # Known issues
 
-- The seeded catalog `products.image_url` values point at a private Elaraby S3 bucket
-  (`elaraby-media-bucket.s3...`) that returns HTTP 403, so real product photos never load.
-  `components/ProductImage.tsx` shows a branded placeholder on failed/missing load and retries
-  per-URL, so re-hosting images to public/Supabase Storage and updating `image_url` will make
-  them appear with no code change. Use `ProductImage` (not raw `expo-image`) for product images.
+- Product images come from Elaraby's catalog. The original `seed_elaraby*.sql` URLs used the
+  private S3 bucket (`elaraby-media-bucket.s3...`), which returns HTTP 403 to outside clients,
+  so those never loaded. The seed files (and live `products.image_url`) now use the **public**
+  storefront host `elarabygroup.com/media/...` — same image paths, but actually served (HTTP 200).
+  When updating live data, run `fix-product-images.sql` in the Supabase SQL editor (RLS blocks
+  writes via the anon key, so it cannot be patched from the app/client).
+- `components/ProductImage.tsx` shows a branded placeholder on failed/missing load and retries
+  per-URL, so swapping any `image_url` to a working public/Supabase Storage URL makes images
+  appear with no code change. Use `ProductImage` (not raw `expo-image`) for product images.
+- The 10 generic demo products (Seamaster/Submariner/etc. from `seed.sql`) have no Elaraby
+  source and use `picsum.photos` placeholders.
